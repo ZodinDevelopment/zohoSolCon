@@ -39,14 +39,13 @@ def get_tickets(token, org_id, **kwargs):
 
 
 def create_ticket(token, org_id, data_object):
-    request_body = {}
-    request_body['data'] = data_object
-    data = json.dumps(request_body).encode('utf-8')
     url = 'https://desk.zoho.com/api/v1/tickets'
     headers = {
         'orgId': org_id,
         'Authorization': 'Zoho-oauthtoken {}'.format(token.access)
     }
+
+    data = json.dumps(data_object).encode("utf-8")
     response = requests.post(url=url, headers=headers, data=data)
 
     if response.status_code == 400:
@@ -57,8 +56,7 @@ def create_ticket(token, org_id, data_object):
 
 def update_ticket(token, org_id, ticket_id, data_object):
     url = f'https://desk.zoho.com/api/v1/tickets/{ticket_id}'
-    request_body = {'data': data_object}
-    data = json.dumps(request_body).encode('utf-8')
+    data = json.dumps(data_object).encode('utf-8')
     headers = {
         'orgId': org_id,
         'Authorization': 'Zoho-oauthtoken {}'.format(token.access)
@@ -80,9 +78,10 @@ def trash_ticket(token, org_id, ticket_id_list):
         'orgId': org_id,
         'Authorization': 'Zoho-oauthtoken {}'.format(token.access)
     }
-    request_body = {'data': {'ticketIds':ticket_id_list}}
+    
+    data_object = {'ticketIds': ticket_id_list}
 
-    data = json.dumps(request_body).encode('utf-8')
+    data = json.dumps(data_object).encode('utf-8')
 
     response = requests.post(url=url, headers=headers, data=data)
 
@@ -103,9 +102,7 @@ def move_ticket(token, org_id, ticket_id, department_id):
     }
     data_object = {'departmentId': department_id}
 
-    request_body = {'data': data_object}
-
-    data = json.dumps(request_body).encode('utf-8')
+    data = json.dumps(data_object).encode('utf-8')
 
     response = requests.post(url=url, headers=headers, data=data)
 

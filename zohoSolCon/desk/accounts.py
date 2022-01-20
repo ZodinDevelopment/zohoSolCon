@@ -44,8 +44,7 @@ def create_account(token, org_id, data_object):
         'Authorization': f'Zoho-oauthtoken {token.access}'
     }
 
-    request_body = {'data': data_object}
-    data = json.dumps(request_body).encode('utf-8')
+    data = json.dumps(data_object).encode('utf-8')
 
     response = requests.post(url=url, headers=headers, data=data)
 
@@ -64,9 +63,8 @@ def update_account(token, org_id, data_object):
         'Authorization': f'Zoho-oauthtoken {token.access}'
     }
 
-    request_body = {'data': data_object}
-    data = json.dumps(request_body).encode('utf-8')
-
+    data = json.dumps(data_object).encode('utf-8')
+    
     response = requests.patch(url=url, headers=headers, data=data)
 
     if response.status_code == 400:
@@ -166,10 +164,7 @@ def account_product_link(token, org_id, account_id, product_id_list, associate=T
     }
     data_object = {'ids': product_id_list, 'associate': associate}
 
-    request_body = {'data': data_object}
-
-    data = json.dumps(request_body).encode('utf-8')
-
+    data = json.dumps(data_object).encode('utf-8')
     response = requests.post(url=url, headers=headers, data=data)
 
     if response.status_code == 400:

@@ -44,10 +44,8 @@ def create_contact(token, org_id, data_object):
         'orgId': org_id,
         'Authorization': f'Zoho-oauthtoken {token.access}'
     }
-    request_body = {'data': data_object}
 
-    data = json.dumps(request_body).encode('utf-8')
-
+    data = json.dumps(data_object).encode('utf-8')
     response = requests.post(url=url, headers=headers, data=data)
 
     if response.status_code == 400:
@@ -66,9 +64,8 @@ def update_contact(token, org_id, contact_id, data_object):
         'orgId': org_id,
         'Authorization': f'Zoho-oauthtoken {token.access}'
     }
-    request_body = {'data': data_object}
-    data = json.dumps(request_body).encode('utf-8')
-
+    data = json.dumps(data_object).encode('utf-8')
+    
     response = requests.patch(url=url, headers=headers, data=data)
 
     if response.status_code == 400:
@@ -159,10 +156,7 @@ def contact_product_link(token, org_id, contact_id, product_id_list, associate=T
     }
     data_object = {"ids": product_id_list, 'associate': associate}
 
-    request_body = {'data': data_object}
-
-    data = json.dumps(request_body).encode('utf-8')
-
+    data = json.dumps(data_object).encode('utf-8')
     response = requests.post(url=url, headers=headers, data=data)
 
     if response.status_code == 400:
