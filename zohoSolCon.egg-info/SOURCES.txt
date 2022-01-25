@@ -6,6 +6,11 @@ zohoSolCon.egg-info/PKG-INFO
 zohoSolCon.egg-info/SOURCES.txt
 zohoSolCon.egg-info/dependency_links.txt
 zohoSolCon.egg-info/top_level.txt
+zohoSolCon/books/__init__.py
+zohoSolCon/books/contact_persons.py
+zohoSolCon/books/contacts.py
+zohoSolCon/books/estimates.py
+zohoSolCon/books/tests.py
 zohoSolCon/crm/__init__.py
 zohoSolCon/crm/attachments.py
 zohoSolCon/crm/notes.py
