@@ -2,18 +2,21 @@ import requests
 import json
 import os
 from datetime import datetime
+import pickle
 
 
 class Token:
-    def __init__(self, client_id, client_secret, grant_token=None, refresh_token=None):
+    def __init__(self, client_id, client_secret, grant_token=None, refresh_token=None, save_refresh=True):
         self.client_id = client_id
         self.client_secret = client_secret
         self.access = None
         self.refresh = refresh_token
         if refresh_token is not None:
-        	self.access = self._generate()
+        	self.generate()
         if grant_token is not None:
             self.access, self.refresh = self._authorize(grant_token)
+        if save_refresh:
+        	self.write_to_file("token.pkl")
         
     def _authorize(self, grant_token):
         url = "https://accounts.zoho.com/oauth/v2/token"
@@ -60,6 +63,31 @@ class Token:
     def read_from_env(self):
         self.refresh = os.environ["ZOHO_REFRESH_KEY"]
 
+	def write_to_file(self, filename):
+		data_object = {
+			"client_id": self.client_id,
+			"client_secret": self.client_secret,
+			"refresh_token": self.refresh
+		}
+		with open(filename, 'wb') as handle:
+			pickle.dump(data_object, handle, protocol=pickle.HIGHEST_PROTOCOL)
+			
+	@classmethod
+	def from_file(cls, filename):
+		try:
+			with open(filename, 'rb') as handle:
+				data_object = pickle.load(handle)
+			client_id = data_object['client_id']
+			client_secret = data_object['client_secret']
+			refresh = data_object['refresh']
+		
+		except FileNotFoundError:
+			print("Invalid Filename"))
+		
+		except KeyError as e:
+			print(str(e))
+		
+					
     
     @property
     def expires_in(self):
