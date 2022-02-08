@@ -2,14 +2,17 @@ import requests
 import json
 
 
+def make_header(token):
+    return {
+        "Authorization": f'Zoho-oauthtoken {token.access}'
+    }
+
 def get_territories(token):
     url = "https://www.zohoapis.com/crm/v2.1/settings/territories"
-    headers = {
-        'Authorization': f"Zoho-oauthtoken {token.access}"
-    }
+    headers = make_header(token)
     response = requests.get(url=url, headers=headers)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         print("Auth")
         return get_territories(token)
@@ -21,9 +24,7 @@ def get_territories(token):
 
 def assign_territories(token, module, record_id, territory_id_list):
     url = f"https://www.zohoapis.com/crm/v2.1/{module}/actions/assign_territories"
-    headers = {
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token)
     request_body = {}
 
     data_object = {'id': record_id}
@@ -40,7 +41,7 @@ def assign_territories(token, module, record_id, territory_id_list):
 
     response = requests.post(url=url, headers=headers, data=data)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return assign_territories(token, module, record_id, territory_id_list)
@@ -53,9 +54,7 @@ def assign_territories(token, module, record_id, territory_id_list):
 
 def remove_territories(token, module, record_id, territory_id_list):
     url = f"https://www.zohoapis.com/crm/v2.1/{module}/actions/remove_territories"
-    headers = {
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token)
     request_body = {}
 
     data_object = {'id': record_id}
@@ -72,7 +71,7 @@ def remove_territories(token, module, record_id, territory_id_list):
 
     response = requests.post(url=url, headers=headers, data=data)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return remove_territories(token, module, record_id, territory_id_list)
@@ -84,12 +83,10 @@ def remove_territories(token, module, record_id, territory_id_list):
 
 def get_territories_assigned(token, module, record_id):
     url = f'https://www.zohoapis.com/crm/v2.1/{module}/{record_id}'
-    headers = {
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token)
     response = requests.get(url=url, headers=headers)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return get_territories_assigned(token, module, record_id)

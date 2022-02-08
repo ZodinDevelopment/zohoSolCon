@@ -2,13 +2,17 @@ import requests
 import json
 
 
-def get_record(token, module, record_id):
-    url = f"https://www.zohoapis.com/crm/v2.1/{module}/{record_id}"
-    headers = {
+def make_header(token):
+    return {
         "Authorization": f"Zoho-oauthtoken {token.access}"
     }
+
+
+def get_record(token, module, record_id):
+    url = f"https://www.zohoapis.com/crm/v2.1/{module}/{record_id}"
+    headers = make_header(token)
     response = requests.get(url=url, headers=headers)
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Authentication issue")
         token.generate()
         return get_record(token, module, record_id)
@@ -21,9 +25,8 @@ def get_record(token, module, record_id):
 
 def update_record(token, module, record_id, data_object):
     url = f"https://www.zohoapis.com/crm/v2.1/{module}"
-    headers = {
-        "Authorization": f"Zoho-oauthtoken {token.access}"
-    }
+    headers = make_header(token)
+    
     data_object["id"] = record_id
 
     request_body = dict()
@@ -35,7 +38,7 @@ def update_record(token, module, record_id, data_object):
     data = json.dumps(request_body).encode('utf-8')
     response = requests.put(url=url, headers=headers, data=data)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth issue")
         token.generate()
         return update_record(token, module, record_id, data_object)
@@ -46,9 +49,8 @@ def update_record(token, module, record_id, data_object):
 
 def create_record(token, module, data_object):
     url = f"https://www.zohoapis.com/crm/v2.1/{module}"
-    headers = {
-        "Authorization": f"Zoho-oauthtoken {token.access}"
-    }
+    headers = make_header(token)
+    
     request_body = {}
     record_list = [data_object]
     request_body['data'] = record_list
@@ -57,7 +59,7 @@ def create_record(token, module, data_object):
 
     response = requests.post(url=url, headers=headers, data=data)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return create_record(token, module, data_object)
@@ -73,7 +75,7 @@ def get_records(token, module, **kwargs):
     }
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return get_records(token, module, **kwargs)
@@ -87,17 +89,15 @@ def get_records(token, module, **kwargs):
 
 def search_records(token, module, criteria, **kwargs):
     url = f"https://www.zohoapis.com/crm/v2.1/{module}/search"
-    headers = {
-        "Authorization": f"Zoho-oauthtoken {token.access}"
-    }
-
+    headers = make_header(token)
+    
     parameters = {"criteria":criteria}
 
     parameters.update(kwargs)
 
     response = requests.get(url=url, headers=headers, params=parameters)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return search_records(token, module, criteria, **kwargs)
@@ -114,9 +114,8 @@ def search_records(token, module, criteria, **kwargs):
 def mass_action(token, module, callback, **kwargs):
     empty = False
     url = f"https://www.zohoapis.com/crm/v2.1/{module}"
-    headers = {
-        "Authorization": f"Zoho-oauthtoken {token.access}"
-    }
+    headers = make_header(token)
+    
     page = 1
     iterated = 0
     parameters = kwargs
@@ -124,11 +123,9 @@ def mass_action(token, module, callback, **kwargs):
         parameters['page'] = str(page)
         parameters['per_page'] = "200"
         response = requests.get(url=url, headers=headers, params=parameters)
-        if response.status_code == 400:
+        if response.status_code == 401:
             token.generate()
-            headers = {
-                "Authorization": f"Zoho-oauthtoken {token.access}"
-            }
+            headers = make_header(token)
             continue
         content = json.loads(response.content.decode('utf-8'))
         data = content.get("data")

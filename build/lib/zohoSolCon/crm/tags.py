@@ -2,14 +2,19 @@ import requests
 import json
 
 
-def get_tags(token, **kwargs):
-    url = 'https://www.zohoapis.com/crm/v2/settings/tags'
-    headers = {
-        'Authorization': f'Zoho-oauthtoken {token.access}'
+def make_header(token):
+    return {
+        "Authorization": f"Zoho-oauthtoken {token.access}"
     }
+
+
+def get_tags(token, **kwargs):
+    url = 'https://www.zohoapis.com/crm/v2.1/settings/tags'
+    headers = make_header(token)
+    
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return get_tags(token, **kwargs)
@@ -30,12 +35,11 @@ def tag_record(token, module, record_id, tag_list, over_write=True):
         else:
             url += '&over_write=false'
             
-    headers = {
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token)
+    
     response = requests.post(url=url, headers=headers)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return tag_record(token, module, record_id, tag_list, over_write=over_write)
@@ -53,12 +57,10 @@ def remove_tags(token, module, record_id, tag_list):
         else:
             url += tag + ','
 
-    headers = {
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token)
     response = requests.post(url=url, headers=headers)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return tag_record(token, module, record_id, tag_list, over_write=over_write)
@@ -69,15 +71,13 @@ def remove_tags(token, module, record_id, tag_list):
 
 
 def count_record_tags(token, module, tag_id):
-    url = f'https://www.zohoapis.com/crm/v2/settings/{tag_id}/actions/records_count'
-    headers = {
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    url = f'https://www.zohoapis.com/crm/v2.1/settings/{tag_id}/actions/records_count'
+    headers = make_header(token)
     parameters = {'module': module}
 
     response = requests.get(url=url, headers=headers, params=parameters)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return count_record_tags(token, module, tag_id)

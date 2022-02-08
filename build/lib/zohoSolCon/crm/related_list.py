@@ -2,15 +2,20 @@ import requests
 import json
 
 
+def make_header(token):
+    return {
+        "Authorization": f'Zoho-oauthtoken {token.access}'
+    }
+
+
 def get_related_records(token, module, record_id, related_list, **kwargs):
     url = f"https://www.zohoapis.com/crm/v2.1/{module}/{record_id}/{related_list}"
 
-    headers = {
-        "Authorization": f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token)
+    
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         print("Auth")
         return get_related_records(token, module, record_id, related_list, **kwargs)
@@ -23,9 +28,8 @@ def get_related_records(token, module, record_id, related_list, **kwargs):
 
 def update_related_record(token, module, record_id, related_list, related_id, data_object):
     url = f'https://www.zohoapis.com/crm/v2.1/{module}/{record_id}/{related_list}'
-    headers = {
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token)
+    
     data_object['id'] = related_id
     request_body = {}
     record_list = [data_object]
@@ -35,7 +39,7 @@ def update_related_record(token, module, record_id, related_list, related_id, da
     
     response = requests.put(url=url, headers=headers,data=data)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return update_related_record(token, module, record_id, related_list, related_id, data_object)
