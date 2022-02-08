@@ -1,5 +1,6 @@
 import requests 
 import json
+from datetime import datetime
 
 
 def make_header(token):
@@ -171,6 +172,8 @@ def mass_action(token, module, callback, **kwargs):
     page = 1
     iterated = 0
     parameters = kwargs
+    start_time = datetime.utcnow().isoformat()
+    
     while not empty:
         parameters['page'] = str(page)
         parameters['per_page'] = "200"
@@ -195,8 +198,25 @@ def mass_action(token, module, callback, **kwargs):
         page += 1
         if len(data) < 200:
             empty = True
+    end_time = datetime.utcnow().isoformat()
+    return token, f"{iterated} Records iterated.\nStart Time: {start_time}\nEnd Time: {end_time}"
 
-    return token, f"{iterated} Records iterated."
+
+def list_action(token, module, callback, record_list):
+    iterated = 0
+    start_time = datetime.utcnow().isoformat()
+    headers = make_header(token)
+
+    for each record_id in record_list:
+        url = f'https://www.zohoapis.com/crm/v2.1/{module}/{record_id}'
+        token, callback_response = callback(token, module, record_id)
+
+        iterated += 1
+        print(callback_response)
+        print(f"{iterated} Records Iterated")
+
+    end_time = datetime.utcnow().isoformat()
+    return token, f'{iterated} Records iterated.\nStart Time: {start_time}\nEnd Time: {end_time}'
 
 
-
+        
