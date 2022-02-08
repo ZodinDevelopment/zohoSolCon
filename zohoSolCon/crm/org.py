@@ -2,15 +2,19 @@ import requests
 import json
 
 
+def make_header(token):
+    return {
+        "Authorization": f"Zoho-oauthtoken {token.access}"
+    }
+
+
 def get_org_details(token):
     url = "https://www.zohoapis.com/crm/v2.1/org"
 
-    headers = {
-        "Authorization": f"Zoho-oauthtoken {token.access}"
-    }
+    headers = make_header(token)
     response = requests.get(url=url, headers=headers)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         return get_org_details(token)
 

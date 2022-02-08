@@ -2,16 +2,19 @@ import requests
 import json
 
 
+def make_header(token):
+    return {
+        "Authorization": f'Zoho-oauthtoken {token.access}'
+    }
+
 def get_users(token, **kwargs):
     url = "https://www.zohoapis.com/crm/v2.1/users"
 
-    headers = {
-        "Authorization": f"Zoho-oauthtoken {token.access}"
-    }
+    headers = make_header(token)
 
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         return get_users(token, **kwargs)
 
@@ -23,9 +26,7 @@ def get_users(token, **kwargs):
 def add_user(token, user_object):
     url = 'https://www.zohoapis.com/crm/v2.1/users'
 
-    headers = {
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token)
 
     request_body = {}
     user_list = [user_object]
@@ -36,7 +37,7 @@ def add_user(token, user_object):
 
     response = requests.post(url=url, headers=headers,data=data)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         return add_user(token, user_object)
 

@@ -2,11 +2,15 @@ import requests
 import json
 
 
+def format_header(token):
+	return {
+		"Authorization": f"Zoho-oauthtoken {token.access}"
+	}
+	
+	
 def create_estimate(token, org_id, data_object, line_items):
 	url = f'https://books.zoho.com/api/v3/estimates?organization_id={org_id}'
-	headers = {
-		'Authorization': f'Zoho-oauthtoken {token.access}'
-	}
+	headers = format_header(token)
 	
 	data_object['line_items'] = line_items
 	
@@ -20,15 +24,17 @@ def create_estimate(token, org_id, data_object, line_items):
 		
 	else:
 		content = json.loads(response.content.decode('utf-8'))
-		return token, response.status_code, content.get("estimate").get("estimate")
+		try:
+			estimate = content['estimate']
+		except Exception as e:
+			estimate = {"status":  response.status_code, "error": str(e)}
+		return token, response.status_code, estimate
 		
 		
 
 def get_estimates(token, org_id, **kwargs):
 	url = f'https://books.zoho.com/api/v3/estimates?organization_id={org_id}'
-	headers = {
-		'Authorization': f'Zoho-oauthtoken {token.access}'
-	}
+	headers = format_header(token)
 	
 	response = requests.get(url=url, headers=headers, params=kwargs)
 	
@@ -38,11 +44,15 @@ def get_estimates(token, org_id, **kwargs):
 		
 	else:
 		content = json.loads(response.content.decode('utf-8'))
-		page_context = content['page_context']
-		estimates = content['estimates'][0]['estimates']
+		try:
+			estimates = content['estimates']
+			page_context = content['page_context']
+		except Exception as e:
+			estimates = [{"status": response.status_code, "error": str(e)}]
+		
 		return token, page_context, estimates
 		
-
+	
 def update_estimate(token, org_id, estimate_id, data_object):
 	url = f'https://books.zoho.com/api/v3/estimates/{estimate_id}?organization_id={org_id}'
 	headers = {
@@ -59,7 +69,13 @@ def update_estimate(token, org_id, estimate_id, data_object):
 		
 	else:
 		content = json.loads(response.content.decode('utf-8'))
-		return token, response.status_code, content.get("estimate").get("estimate")
+		try:
+			estimate = content['estimate']
+		except Exception as e:
+			estimate = {"status": response.status_code, "error": str(e)}
+		
+		return token, response.status_code, estimate
+		
 		
 
 def get_estimate(token, org_id, estimate_id, **kwargs):
@@ -76,7 +92,12 @@ def get_estimate(token, org_id, estimate_id, **kwargs):
 	
 	else:
 		content = json.loads(response.content.decode('utf-8'))
-		return token, content.get("estimate").get("estimate")
+		try:
+			estimate = content['estimate']
+		except Exception as e:
+			estimate = {'status': response.status_code, 'error': str(e)}
+			
+		return token, estimate
 		
 		
 def delete_estimate(token, org_id, estimate_id):
@@ -150,7 +171,7 @@ def mass_action(token, org_id, callback, **kwargs):
                         continue
 
                 content = json.loads(response.content.decode('utf-8'))
-                estimates = content['estimates'][0]['estimates']
+                estimates = content['estimates']
 
                 for record in estimates:
                         token, callback_response = callback(token, org_id, record)

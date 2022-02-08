@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-VERSION = '0.3.3'
+VERSION = '0.3.4'
 DESCRIPTION = "Implementation tools for Zoho CRM"
 LONG_DESCRIPTION = "A pet project I'm working, makes API calls to Zoho APIS"
 

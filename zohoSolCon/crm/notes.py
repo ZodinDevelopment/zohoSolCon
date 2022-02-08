@@ -1,15 +1,18 @@
 import requests
 import json
 
-
-def get_notes(token, **kwargs):
-    url = 'https://www.zohoapis.com/crm/v2/Notes'
-    headers = {
+def make_header(token):
+    return {
         'Authorization': f'Zoho-oauthtoken {token.access}'
     }
+
+
+def get_notes(token, **kwargs):
+    url = 'https://www.zohoapis.com/crm/v2.1/Notes'
+    headers = make_header(token)
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return get_notes(token, **kwargs)
@@ -20,13 +23,12 @@ def get_notes(token, **kwargs):
 
 
 def get_note(token, note_id):
-    url = f'https://www.zohoapis.com/crm/v2/Notes/{note_id}'
-    headers = {
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    url = f'https://www.zohoapis.com/crm/v2.1/Notes/{note_id}'
+    headers = make_header(token)
+    
     response = requests.get(url=url, headers=headers)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return get_note(token, note_id)
@@ -37,14 +39,12 @@ def get_note(token, note_id):
 
 
 def get_record_notes(token, module, record_id, **kwargs):
-    url = f'https://www.zohoapis.com/crm/v2/{module}/{record_id}/Notes'
-    headers = {
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    url = f'https://www.zohoapis.com/crm/v2.1/{module}/{record_id}/Notes'
+    headers = make_header(token)
 
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return get_record_notes(token, module, record_id, **kwargs)
@@ -55,10 +55,8 @@ def get_record_notes(token, module, record_id, **kwargs):
 
 
 def create_note(token, module, record_id, note_object):
-    url = 'https://www.zohoapis.com/crm/v2/Notes'
-    headers = {
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    url = 'https://www.zohoapis.com/crm/v2.1/Notes'
+    headers = make_header(token)
 
     request_body = {}
     note_object['Parent_Id'] = record_id
@@ -71,7 +69,7 @@ def create_note(token, module, record_id, note_object):
 
     response = requests.post(url=url, headers=headers, data=data)
 
-    if resonse.status_code == 400:
+    if resonse.status_code == 401:
         print("Auth")
         token.generate()
         return create_note(token, module, record_id, note_object)
