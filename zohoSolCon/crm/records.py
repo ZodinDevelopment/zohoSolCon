@@ -47,6 +47,26 @@ def update_record(token, module, record_id, data_object):
         return token, response.status_code, json.loads(response.content.decode('utf-8'))
 
 
+def convert_lead(token, record_id, **kwargs):
+    data_object = kwargs
+    request_body = dict()
+    record_list = list()
+
+    record_list.append(data_object)
+    request_body['data'] = record_list
+
+    data = json.dumps(request_body).encode('utf-8')
+
+    response = requests.post(url=url, headers=headers, data=data)
+
+    if response.status_code == 401:
+        token.generate()
+        return convert_lead(token, record_id, **kwargs)
+
+    else:
+        content = json.loads(response.content.decode('utf-8'))
+        return token, content.get("data")
+
 def create_record(token, module, data_object):
     url = f"https://www.zohoapis.com/crm/v2.1/{module}"
     headers = make_header(token)
@@ -70,9 +90,7 @@ def create_record(token, module, data_object):
 
 def get_records(token, module, **kwargs):
     url = f"https://www.zohoapis.com/crm/v2.1/{module}"
-    headers = {
-        "Authorization": f"Zoho-oauthtoken {token.access}"
-    }
+    headers = make_header(token)
     response = requests.get(url=url, headers=headers, params=kwargs)
 
     if response.status_code == 401:
@@ -86,6 +104,39 @@ def get_records(token, module, **kwargs):
 
         return token, records
 
+
+def get_deleted_records(token, module, record_type, **kwargs):
+    url = f'https://www.zohoapis.com/crm/v2.1/{module}/deleted?type={record_type}'
+    headers = make_header(token)
+
+    response = requests.get(url=url, headers=headers, params=kwargs)
+
+    if response.status_code == 401:
+        token.generate()
+        return get_deleted_records(token, module, record_type, **kwargs)
+
+    else:
+        content = json.loads(response.content.decode('utf-8'))
+        return token, content.get('data')
+
+
+def record_count(token, module, criteria=None, **kwargs):
+    url = f'https://www.zohoapis.com/crm/v2.1/{module}/actions/count'
+    headers = make_header(token)
+
+    params = kwargs
+    if criteria is not None:
+        params['criteria': criteria]
+
+    response = requests.get(url=url, headers=headers, params=params)
+
+    if response.status_code == 401:
+        token.generate()
+        return record_count(token, module, criteria=criteria, **kwargs)
+
+    else:
+        content = json.loads(response.content.decode('utf-8'))
+        return token, content.get("count")
 
 def search_records(token, module, criteria, **kwargs):
     url = f"https://www.zohoapis.com/crm/v2.1/{module}/search"
@@ -108,7 +159,8 @@ def search_records(token, module, criteria, **kwargs):
     else:
         content = json.loads(response.content.decode('utf-8'))
         records = content.get('data')
-        return token, records
+        page_info = content.get("info")
+        return token, records, page_info
 
 
 def mass_action(token, module, callback, **kwargs):

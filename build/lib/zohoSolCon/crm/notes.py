@@ -1,6 +1,7 @@
 import requests
 import json
 
+
 def make_header(token):
     return {
         'Authorization': f'Zoho-oauthtoken {token.access}'
@@ -76,7 +77,22 @@ def create_note(token, module, record_id, note_object):
 
     else:
         content = json.loads(response.content.decode('utf-8'))
-        return token, response.status_code, content
+        return token, response.status_code, content.get('data')
 
 
 
+def delete_note(token, module, note_id):
+    url = f'https://www.zohoapis.com/crm/v2.1/Notes'
+    headers = make_header(token)
+
+    parameters = {'ids': note_id}
+
+    response = requests.delete(url=url, headers=headers, params=parameters)
+
+    if response.status_code == 401:
+        token.generate()
+        return delete_note(token, module, note_id)
+
+    else:
+        content = json.loads(response.content.decode('utf-8'))
+        return token, content.get('data')

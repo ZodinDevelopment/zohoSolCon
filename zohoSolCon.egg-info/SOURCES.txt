@@ -15,6 +15,7 @@ zohoSolCon/crm/__init__.py
 zohoSolCon/crm/attachments.py
 zohoSolCon/crm/notes.py
 zohoSolCon/crm/org.py
+zohoSolCon/crm/profiles.py
 zohoSolCon/crm/records.py
 zohoSolCon/crm/related_list.py
 zohoSolCon/crm/roles.py

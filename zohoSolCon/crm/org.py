@@ -24,3 +24,18 @@ def get_org_details(token):
         return token, org
 
 
+def upload_org_photo(token, file_name):
+    url = 'https://www.zohoapis.com/crm/v2.1/org/photo'
+    headers = make_header(token)
+
+    with open(file_name, 'rb') as file:
+        request_body = {'file': file}
+        response = requests.post(url=url, files=request_body, headers=headers)
+
+    if response.status_code == 401:
+        token.generate()
+        return upload_org_photo(token, file_name)
+
+    else:
+        content = json.loads(response.content.decode('utf-8'))
+        return token, content
