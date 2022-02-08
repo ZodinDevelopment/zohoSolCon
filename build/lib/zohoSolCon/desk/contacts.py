@@ -2,15 +2,19 @@ import requests
 import json
 
 
+def make_header(token, org_id):
+    return {
+        "orgId": org_id,
+        "Authorization": f"Zoho-oauthtoken {token.access}"
+    }
+
+
 def get_contact(token, org_id, contact_id, **kwargs):
     url = f'https://desk.zoho.com/api/v1/contacts/{contact_id}'
-    headers = {
-        'orgId': org_id,
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token, org_id)
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return get_contact(token, org_id, contact_id, **kwargs)
@@ -22,13 +26,10 @@ def get_contact(token, org_id, contact_id, **kwargs):
 
 def get_contacts(token, org_id, **kwargs):
     url = 'https://desk.zoho.com/api/v1/contacts'
-    headers = {
-        'orgId': org_id,
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token, org_id)
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return get_contacts(token, org_id, **kwargs)
@@ -40,15 +41,11 @@ def get_contacts(token, org_id, **kwargs):
 
 def create_contact(token, org_id, data_object):
     url = 'https://desk.zoho.com/api/v1/contacts'
-    headers = {
-        'orgId': org_id,
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
-
+    headers = make_header(token, org_id)
     data = json.dumps(data_object).encode('utf-8')
     response = requests.post(url=url, headers=headers, data=data)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return create_contact(token, org_id, data_object)
@@ -60,15 +57,12 @@ def create_contact(token, org_id, data_object):
 
 def update_contact(token, org_id, contact_id, data_object):
     url = f'https://desk.zoho.com/api/v1/contacts/{contact_id}'
-    headers = {
-        'orgId': org_id,
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token, org_id)
     data = json.dumps(data_object).encode('utf-8')
     
     response = requests.patch(url=url, headers=headers, data=data)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return update_contact(token, org_id, contact_id, data_object)
@@ -80,13 +74,10 @@ def update_contact(token, org_id, contact_id, data_object):
 
 def contact_tickets(token, org_id, contact_id, **kwargs):
     url = f'https://desk.zoho.com/api/v1/contacts/{contact_id}/tickets'
-    headers = {
-        'orgId':org_id,
-        "Authorization": f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token, org_id)
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return contact_tickets(token, org_id, contact_id, **kwargs)
@@ -98,12 +89,9 @@ def contact_tickets(token, org_id, contact_id, **kwargs):
 
 def contact_products(token, org_id, contact_id, **kwargs):
     url = f'https://desk.zoho.com/api/v1/contacts/{contact_id}/products'
-    headers = {
-        'orgId':org_id,
-        "Authorization": f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token, org_id)
     response = requests.get(url=url, headers=headers, params=kwargs)
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return contact_products(token, org_id, contact_id, **kwargs)
@@ -121,7 +109,7 @@ def contacts_count(token, org_id, view_id):
     }
     response = requests.get(url=url, headers=headers, params={'viewId':view_id})
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return contacts_count(token, org_id, view_id)
@@ -132,13 +120,10 @@ def contacts_count(token, org_id, view_id):
 
 def contact_stats(token, org_id, contact_id, **kwargs):
     url = f'https://desk.zoho.com/api/v1/contacts/{contact_id}/statistics'
-    headers = {
-        'orgId':org_id,
-        "Authorization": f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token, org_id)
     response = requests.get(url=url, headers=headers, params=kwargs)
     
-    if response.status_code == 400:
+    if response.status_code == 401:
         print("Auth")
         token.generate()
         return contact_status(token, org_id, contact_id, **kwargs)
@@ -150,16 +135,13 @@ def contact_stats(token, org_id, contact_id, **kwargs):
 
 def contact_product_link(token, org_id, contact_id, product_id_list, associate=True, department_id=None):
     url = f'https://desk.zoho.com/api/v1/contacts/{contact_id}/associateProducts'
-    headers = {
-        'orgId':org_id,
-        "Authorization": f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token, org_id)
     data_object = {"ids": product_id_list, 'associate': associate}
 
     data = json.dumps(data_object).encode('utf-8')
     response = requests.post(url=url, headers=headers, data=data)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         print('Auth')
         token.generate()
         return contact_product_link(token, org_id, contact_id, product_id_list, associate=associate)
@@ -171,14 +153,11 @@ def contact_product_link(token, org_id, contact_id, product_id_list, associate=T
 
 def contact_accounts(token, org_id, contact_id, **kwargs):
     url = f'https://desk.zoho.com/api/v1/contacts/{contact_id}/accounts'
-    headers = {
-        'orgId':org_id,
-        "Authorization": f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token, org_id)
 
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         return contact_accounts(token, org_id, contact_id, **kwargs)
 

@@ -2,15 +2,18 @@ import requests
 import json
 
 
+def make_header(token, org_id):
+    return {
+        "orgId": org_id,
+        "Authorization": f"Zoho-oauthtoken {token.access}"
+    }
+
 def get_account(token, org_id, account_id, **kwargs):
     url = f'https://desk.zoho.com/api/v1/accounts/{account_id}'
-    headers = {
-        'orgId': org_id,
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token, org_id)
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         return get_account(token, org_id, account_id, **kwargs)
 
@@ -21,14 +24,11 @@ def get_account(token, org_id, account_id, **kwargs):
 
 def get_accounts(token, org_id, **kwargs):
     url = f'https://desk.zoho.com/v1/accounts'
-    headers = {
-        'orgId': org_id,
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
-
+    headers = make_header(token, org_id)
+    
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         return get_accounts(token, org_id, **kwargs)
 
@@ -39,16 +39,12 @@ def get_accounts(token, org_id, **kwargs):
 
 def create_account(token, org_id, data_object):
     url = f'https://desk.zoho.com/v1/accounts'
-    headers = {
-        'orgId': org_id,
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
-
+    headers = make_header(token, org_id)
     data = json.dumps(data_object).encode('utf-8')
 
     response = requests.post(url=url, headers=headers, data=data)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         return create_account(token, org_id, data_object)
 
@@ -58,16 +54,12 @@ def create_account(token, org_id, data_object):
 
 def update_account(token, org_id, data_object):
     url = f'https://desk.zoho.com/v1/accounts'
-    headers = {
-        'orgId': org_id,
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
-
+    headers = make_header(token, org_id)
     data = json.dumps(data_object).encode('utf-8')
     
     response = requests.patch(url=url, headers=headers, data=data)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         return update_account(token, org_id, data_object)
 
@@ -78,13 +70,10 @@ def update_account(token, org_id, data_object):
 
 def account_contracts(token, org_id, account_id, **kwargs):
     url = f'https://desk.zoho.com/api/v1/accounts/{account_id}/contracts'
-    headers = {
-        'orgId': org_id,
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token, org_id)
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         return account_contracts(token, org_id, account_id, **kwargs)
 
@@ -94,13 +83,10 @@ def account_contracts(token, org_id, account_id, **kwargs):
 
 def accounts_count(token, org_id, view_id):
     url = 'https://desk.zoho.com/api/v1/accounts/count'
-    headers = {
-        'orgId': org_id,
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token, org_id)
     response = requests.get(url=url, headers=headers, params={'viewId': view_id})
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         return accounts_count(token, org_id, view_id)
 
@@ -110,13 +96,10 @@ def accounts_count(token, org_id, view_id):
 
 def account_contacts(token, org_id, account_id, **kwargs):
     url = f'https://desk.zoho.com/api/v1/accounts/{account_id}/contacts'
-    headers = {
-        'orgId': org_id,
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token, org_id)
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         return account_contacts(token, org_id, account_id, **kwargs)
 
@@ -132,7 +115,7 @@ def account_tickets(token, org_id, account_id, **kwargs):
     }
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         return account_tickets(token, org_id, account_id, **kwargs)
 
@@ -142,13 +125,10 @@ def account_tickets(token, org_id, account_id, **kwargs):
 
 def account_products(token, org_id, account_id, **kwargs):
     url = f'https://desk.zoho.com/api/v1/accounts/{account_id}/products'
-    headers = {
-        'orgId': org_id,
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token, org_id)
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         return account_products(token, org_id, account_id, **kwargs)
 
@@ -158,16 +138,13 @@ def account_products(token, org_id, account_id, **kwargs):
 
 def account_product_link(token, org_id, account_id, product_id_list, associate=True):
     url = f'https://desk.zoho.com/api/v1/accounts/{account_id}/associateProducts'
-    headers = {
-        'orgId': org_id,
-        'Authorization': f'Zoho-oauthtoken {token.access}'
-    }
+    headers = make_header(token, org_id)
     data_object = {'ids': product_id_list, 'associate': associate}
 
     data = json.dumps(data_object).encode('utf-8')
     response = requests.post(url=url, headers=headers, data=data)
 
-    if response.status_code == 400:
+    if response.status_code == 401:
         token.generate()
         
         return account_product_link(token, org_id, account_id, product_id_list, associate=associate)
