@@ -63,29 +63,29 @@ class Token:
     def read_from_env(self):
         self.refresh = os.environ["ZOHO_REFRESH_KEY"]
 
-	def write_to_file(self, filename):
-		data_object = {
-			"client_id": self.client_id,
-			"client_secret": self.client_secret,
-			"refresh_token": self.refresh
-		}
-		with open(filename, 'wb') as handle:
-			pickle.dump(data_object, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    def write_to_file(self, filename):
+        data_object = {
+	    "client_id": self.client_id,
+	    "client_secret": self.client_secret,
+	    "refresh_token": self.refresh
+	}
+        with open(filename, 'wb') as handle:
+            pickle.dump(data_object, handle, protocol=pickle.HIGHEST_PROTOCOL)
 			
-	@classmethod
-	def from_file(cls, filename):
-		try:
-			with open(filename, 'rb') as handle:
-				data_object = pickle.load(handle)
-			client_id = data_object['client_id']
-			client_secret = data_object['client_secret']
-			refresh = data_object['refresh']
+    @classmethod
+    def from_file(cls, filename):
+        try:
+            with open(filename, 'rb') as handle:
+                data_object = pickle.load(handle)
+                client_id = data_object['client_id']
+                client_secret = data_object['client_secret']
+                refresh = data_object['refresh']
 		
-		except FileNotFoundError:
-			print("Invalid Filename"))
+        except FileNotFoundError:
+            print("Invalid Filename")
 		
-		except KeyError as e:
-			print(str(e))
+        except KeyError as e:
+            print(str(e))
 		
 					
     

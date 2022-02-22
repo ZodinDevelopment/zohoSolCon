@@ -207,7 +207,7 @@ def list_action(token, module, callback, record_list):
     start_time = datetime.utcnow().isoformat()
     headers = make_header(token)
 
-    for each record_id in record_list:
+    for record_id in record_list:
         url = f'https://www.zohoapis.com/crm/v2.1/{module}/{record_id}'
         token, callback_response = callback(token, module, record_id)
 
