@@ -28,5 +28,8 @@ zohoSolCon/desk/__init__.py
 zohoSolCon/desk/accounts.py
 zohoSolCon/desk/agents.py
 zohoSolCon/desk/contacts.py
+zohoSolCon/desk/departments.py
 zohoSolCon/desk/profiles.py
+zohoSolCon/desk/roles.py
+zohoSolCon/desk/teams.py
 zohoSolCon/desk/tickets.py
