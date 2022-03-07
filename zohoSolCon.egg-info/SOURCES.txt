@@ -10,8 +10,11 @@ zohoSolCon/books/__init__.py
 zohoSolCon/books/contact_persons.py
 zohoSolCon/books/contacts.py
 zohoSolCon/books/estimates.py
+zohoSolCon/books/invoices.py
 zohoSolCon/books/salesorders.py
 zohoSolCon/books/tests.py
+zohoSolCon/creator/__init__.py
+zohoSolCon/creator/data.py
 zohoSolCon/crm/__init__.py
 zohoSolCon/crm/attachments.py
 zohoSolCon/crm/notes.py
