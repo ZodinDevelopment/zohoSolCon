@@ -130,7 +130,7 @@ def mark_unread(token, org_id, ticket_id):
         return mark_unread(token, org_id, ticket_id)
 
     else:
-        return token, reponse.status_code
+        return token, response.status_code
 
 
 def ticket_history(token, org_id, ticket_id, **kwargs):
