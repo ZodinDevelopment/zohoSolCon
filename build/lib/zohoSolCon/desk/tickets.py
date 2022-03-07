@@ -431,7 +431,7 @@ def mass_action(token, org_id, callback, **kwargs):
             empty = True
 
         for record in data:
-            token, callback_resposnse = callback(token, org_id, record)
+            token, callback_response = callback(token, org_id, record)
             print(callback_response)
             index += 1
             print(f'{index} Records iterated')
