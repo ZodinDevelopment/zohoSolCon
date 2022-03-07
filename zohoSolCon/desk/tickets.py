@@ -435,7 +435,7 @@ def mass_action(token, org_id, callback, **kwargs):
             print(callback_response)
             index += 1
             print(f'{index} Records iterated')
-        if len(data) < 200:
+        if len(data) < 100:
             empty = True
 
     end_time = datetime.utcnow()
