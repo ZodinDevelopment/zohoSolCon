@@ -10,6 +10,7 @@ zohoSolCon/books/__init__.py
 zohoSolCon/books/contact_persons.py
 zohoSolCon/books/contacts.py
 zohoSolCon/books/estimates.py
+zohoSolCon/books/salesorders.py
 zohoSolCon/books/tests.py
 zohoSolCon/crm/__init__.py
 zohoSolCon/crm/attachments.py
@@ -33,3 +34,8 @@ zohoSolCon/desk/profiles.py
 zohoSolCon/desk/roles.py
 zohoSolCon/desk/teams.py
 zohoSolCon/desk/tickets.py
+zohoSolCon/inventory/__init__.py
+zohoSolCon/inventory/composite_items.py
+zohoSolCon/inventory/contacts.py
+zohoSolCon/inventory/items.py
+zohoSolCon/inventory/organizations.py

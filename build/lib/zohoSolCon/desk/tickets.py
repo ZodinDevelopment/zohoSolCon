@@ -1,5 +1,6 @@
 import requests
 import json
+from datetime import datetime
 
 
 def make_header(token, org_id):
@@ -406,3 +407,42 @@ def delete_spam_tickets(token, org_id, department_id):
 
 
 
+def mass_action(token, org_id, callback, **kwargs):
+    url = 'https://desk.zoho.com/api/v1/tickets'
+    headers = make_header(token, org_id)
+    empty = False
+    index = 0
+    iterated = 0
+    params = kwargs
+    start_time = datetime.utcnow()
+    
+    while not empty:
+        params['from'] = index
+        params['limit'] = 100
+        response = requests.get(url=url, headers=headers, params=params)
+        if response.status_code == 401:
+            token.generate()
+            headers = make_header(token, org_id)
+            continue
+        content = json.loads(response.content.decode('utf-8'))
+        data = content.get('data')
+        if len(data) == 0:
+            print("Done")
+            empty = True
+
+        for record in data:
+            token, callback_resposnse = callback(token, org_id, record)
+            print(callback_response)
+            index += 1
+            print(f'{index} Records iterated')
+        if len(data) < 200:
+            empty = True
+
+    end_time = datetime.utcnow()
+    time_diff = end_time - start_time
+    return token, f'{index} Records iterated.\nStart Time: {start_time.isoformat()}\nEnd Time: {end_time.isoformat()}\nElapsed: {time_diff}'
+
+        
+            
+        
+    
