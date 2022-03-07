@@ -79,7 +79,7 @@ class Token:
                 data_object = pickle.load(handle)
                 client_id = data_object['client_id']
                 client_secret = data_object['client_secret']
-                refresh = data_object['refresh']
+                refresh = data_object['refresh_token']
             return Token(client_id, client_secret, grant_token=None, refresh_token=refresh)
         except FileNotFoundError:
             print("Invalid Filename")
