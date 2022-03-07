@@ -202,7 +202,7 @@ def bulk_update_tickets(token, org_id, ticket_id_list, field_name, **kwargs):
     data_object = {
         'fieldName': field_name,
         'ids': ticket_id_list,
-        'fieldValue': kwargs.get("fieldValue")
+        'fieldValue': kwargs.get("fieldValue"),
         'isCustomField': kwargs.get("isCustomField")
     }
 
@@ -261,7 +261,7 @@ def count_in_view(token, org_id, view_id, department_id, **kwargs):
 
     params = {
         'viewId': view_id,
-        'departmentId', department_id,
+        'departmentId': department_id,
         'agentId': kwargs.get("agentId")
     }
     response = requests.get(url=url, headers=headers, params=params)
