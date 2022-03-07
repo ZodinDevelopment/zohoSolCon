@@ -80,7 +80,7 @@ class Token:
                 client_id = data_object['client_id']
                 client_secret = data_object['client_secret']
                 refresh = data_object['refresh']
-		
+	    return Token(client_id, client_secret, grant_token=None, refresh_token=refresh)
         except FileNotFoundError:
             print("Invalid Filename")
 		
