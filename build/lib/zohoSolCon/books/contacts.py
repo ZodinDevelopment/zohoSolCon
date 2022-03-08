@@ -30,7 +30,7 @@ def get_contacts(token, org_id, **kwargs):
     url = f'https://books.zoho.com/api/v3/contacts?organization_id={org_id}'
     headers = format_header(token)
 
-    response = requests.get(url=url, headers=headers)
+    response = requests.get(url=url, headers=headers, params=kwargs)
 
     if response.status_code == 400:
         token.generate()
