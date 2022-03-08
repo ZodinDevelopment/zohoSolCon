@@ -30,7 +30,7 @@ def create_contact_person(token, org_id, contact_id, data_object):
         except Exception as e:
             contact_person = {'status': response.status_code, "error": str(e)}
 
-        return token, response.status_code, contact_person
+        return token, content.get('message'), contact_person
 
 
 
@@ -56,7 +56,7 @@ def update_contact_person(token, org_id, contact_person_id, data_object):
         except Exception as e:
             contact_person = {'status': response.status_code, "error": str(e)}
 
-        return token, response.status_code, contact_person
+        return token, content.get('message'), contact_person
 
 
 

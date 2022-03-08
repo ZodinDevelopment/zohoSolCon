@@ -24,7 +24,7 @@ def create_invoice(token, org_id, customer_id, data_object):
 
     else:
         content = json.loads(response.content.decode('utf-8'))
-        return token, content.get("invoice")
+        return token, content.get('message'),content.get("invoice")
     
 
 def get_invoices(token, org_id, **kwargs):
@@ -41,7 +41,7 @@ def get_invoices(token, org_id, **kwargs):
 
     else:
         content = json.loads(response.content.decode('utf-8'))
-        return token, content.get("invoices")
+        return token, content.get("page_context"), content.get("invoices")
 
 
 
@@ -135,7 +135,7 @@ def email_invoice(token, org_id, invoice_id, to_mail_ids, **kwargs):
         content = json.loads(response.content.decode('utf-8'))
         return token, content.get("message")
 
-    d
+    
     
 
 

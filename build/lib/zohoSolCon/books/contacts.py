@@ -23,7 +23,7 @@ def create_contact(token, org_id, data_object):
 
     else:
         content = json.loads(response.content.decode('utf-8'))
-        return token, response.status_code, content.get("contact")
+        return token, content.get("message"), content.get("contact")
 
 
 def get_contacts(token, org_id, **kwargs):
@@ -70,7 +70,7 @@ def update_contact(token, org_id, contact_id, data_object):
         except Exception as e:
             contact = {'status': response.status_code, 'error': str(e)}
 
-        return token, response.status_code, contact
+        return token, content.get("message"), contact
 
 
 def get_contact(token, org_id, contact_id):

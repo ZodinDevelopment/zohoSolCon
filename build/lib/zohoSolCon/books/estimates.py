@@ -20,7 +20,7 @@ def create_estimate(token, org_id, data_object, line_items):
 	
 	if response.status_code == 400:
 		token.generate()
-		return create_estimate(token, org_id, data_object, line_items)
+                return create_estimate(token, org_id, data_object, line_items)
 		
 	else:
 		content = json.loads(response.content.decode('utf-8'))
@@ -28,7 +28,7 @@ def create_estimate(token, org_id, data_object, line_items):
 			estimate = content['estimate']
 		except Exception as e:
 			estimate = {"status":  response.status_code, "error": str(e)}
-		return token, response.status_code, estimate
+		return token, content.get("message"), estimate
 		
 		
 
@@ -74,7 +74,7 @@ def update_estimate(token, org_id, estimate_id, data_object):
 		except Exception as e:
 			estimate = {"status": response.status_code, "error": str(e)}
 		
-		return token, response.status_code, estimate
+		return token, content.get("message"), estimate
 		
 		
 
@@ -151,6 +151,25 @@ def estimate_approval(token, org_id, estimate_id, action):
 		return token, content.get("message")
 		
 
+def email_estimate(token, org_id, estimate_id, to_mail_ids, **kwargs):
+        url = f'https://books.zoho.com/api/v3/estimates/{estimate_id}/email'
+        headers = format_header(token)
+        params = {'organization_id': org_id}
+
+        data_object = kwargs
+        data_object['to_mail_ids'] = to_mail_ids
+
+        data = json.dumps(data_object).encode('utf-8')
+        response = requests.post(url=url, headers=headers, params=params, data=data)
+        if response.status_code == 401:
+                token.generate()
+                return email_estimate(token org_id, estimate_id, to_mail_ids, **kwargs)
+        else:
+                content = json.loads(response.content.decode('utf-8'))
+                return token, content.get('message')
+                
+                
+        
 
 def mass_action(token, org_id, callback, **kwargs):
         next_page = True

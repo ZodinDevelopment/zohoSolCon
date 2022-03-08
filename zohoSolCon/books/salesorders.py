@@ -42,7 +42,7 @@ def get_salesorders(token, org_id, **kwargs):
 
     else:
         content = json.loads(response.content.decode('utf-8'))
-        return token, content.get("salesorders")
+        return token, content.get("page_context"), content.get("salesorders")
 
 
 def update_salesorder(token, org_id, salesorder_id, customer_id, data_object):
