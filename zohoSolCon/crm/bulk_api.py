@@ -62,7 +62,7 @@ def fetch_bulk_read(token, job_obj):
 	else:
 		filename = Path(f"bulk_read{job_id}.zip")
 		filename.write_bytes(response.content)
-		input(f"Your data has been arrived: '{filename}' >>>>> ")
+		input(f"Your data has arrived: '{filename}' >>>>> ")
 		return token, filename
 
 
@@ -102,7 +102,7 @@ def bulk_read_updates(token, job_details):
 			data = content.get("data")[0]
 			status = data.get("state")
 
-	os.system("cear")
+	os.system("clear")
 	print("Your bulk read job is marked as COMPLETED")	
 	time.sleep(0.5)
 	results = data.get("result")
