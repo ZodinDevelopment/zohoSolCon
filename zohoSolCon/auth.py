@@ -1,3 +1,4 @@
+import time
 import requests
 import json
 import os
@@ -11,6 +12,7 @@ class Token:
         self.client_secret = client_secret
         self.access = None
         self.refresh = refresh_token
+       # self.init_token_dir()
         if refresh_token is not None:
         	self.generate()
         if grant_token is not None:
@@ -40,6 +42,36 @@ class Token:
         else:
             raise Exception("Need to build exceptions")
 
+    def init_token_dir(self):
+        self.token_path = os.path.join("~", "ZohoOauthVault")
+        if not os.path.exists(self.token_path):
+            os.mkdir(self.token_path)
+
+        else:
+            dir_contents = os.listdir(self.token_path)
+            print(f"A directory has already been setup previously, {len(dir_contens)} refresh tokens were found.")
+            token_prompt = str(input("Would you like to use an already existing token? [y/N] --> "))
+            answer = token_prompt.strip().upper()
+            if answer == "N":
+                return
+
+            elif answer == "Y":
+                os.system('clear')
+                for idx, file in enumerate(dir_contents):
+                    print(f'[{idx}] {file}')
+
+                try:
+                    token_select = int(input("Use the numerical keys to select a token to use --> "))
+                    self.token_path = os.path.join(self.token_path, dir_contents[0])
+                except TypeError:
+                    print("Error: expected integer response.")
+                    time.sleep(3)
+                    os.system('clear')
+                  #  return self.init_token_dir()
+               # try:
+                    #token = dir_contents[token_select]
+
+
     def _generate(self):
         url = "https://accounts.zoho.com/oauth/v2/token?refresh_token={}".format(self.refresh)
         url += "&client_id={}".format(self.client_id)
@@ -54,8 +86,6 @@ class Token:
             self.auth_time = datetime.utcnow()
             return access_token
 
-    def generate(self):
-        self.access = self._generate()      
        
     def write_to_env(self):
         os.environ["ZOHO_REFRESH_KEY"] = self.refresh
@@ -63,7 +93,7 @@ class Token:
     def read_from_env(self):
         self.refresh = os.environ["ZOHO_REFRESH_KEY"]
 
-    def write_to_file(self, filename):
+    def write_to_file(self, filename="zohotoken.pkl"):
         data_object = {
 	    "client_id": self.client_id,
 	    "client_secret": self.client_secret,
@@ -71,7 +101,12 @@ class Token:
 	}
         with open(filename, 'wb') as handle:
             pickle.dump(data_object, handle, protocol=pickle.HIGHEST_PROTOCOL)
-			
+	
+
+    def generate(self):
+        self.access = self._generate()
+        self.write_to_file()   
+    		
     @classmethod
     def from_file(cls, filename):
         try:

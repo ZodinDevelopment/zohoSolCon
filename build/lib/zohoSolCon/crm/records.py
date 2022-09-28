@@ -5,16 +5,18 @@ from datetime import datetime
 
 def make_header(token):
     return {
-        "Authorization": f"Zoho-oauthtoken {token.access}"
+        "Authorization": f"Zoho-oauthtoken {token.access}",
+        #"Content-Type": "application/json"
     }
 
-
+##v3
 def get_record(token, module, record_id):
-    url = f"https://www.zohoapis.com/crm/v2.1/{module}/{record_id}"
+    url = f"https://www.zohoapis.com/crm/v3/{module}/{record_id}"
     headers = make_header(token)
     response = requests.get(url=url, headers=headers)
-    if response.status_code == 401:
-        print("Authentication issue")
+    if response.status_code >= 400 and response.status_code < 500:
+        #print("Authentication issue")
+        print("Refreshing token")
         token.generate()
         return get_record(token, module, record_id)
 
@@ -24,14 +26,16 @@ def get_record(token, module, record_id):
         return token, data
 
 
+#V3 ready
 def update_record(token, module, record_id, data_object):
-    url = f"https://www.zohoapis.com/crm/v2.1/{module}"
+    #url = f"https://www.zohoapis.com/crm/v2.1/{module}"
+    url = f'https://www.zohoapis.com/crm/v3/{module}'
     headers = make_header(token)
     
     data_object["id"] = record_id
 
-    request_body = dict()
-    record_list = list()
+    request_body = {}
+    record_list = []
 
     record_list.append(data_object)
     request_body['data'] = record_list
@@ -39,37 +43,42 @@ def update_record(token, module, record_id, data_object):
     data = json.dumps(request_body).encode('utf-8')
     response = requests.put(url=url, headers=headers, data=data)
 
-    if response.status_code == 401:
-        print("Auth issue")
+    #if response.status_code == 401:
+    if response.status_code <= 400 and response.statud_code < 500:
+        print("Refreshing token")
         token.generate()
         return update_record(token, module, record_id, data_object)
 
     else:
-        return token, response.status_code, json.loads(response.content.decode('utf-8'))
-
-
-def convert_lead(token, record_id, **kwargs):
-    data_object = kwargs
-    request_body = dict()
-    record_list = list()
-
-    record_list.append(data_object)
-    request_body['data'] = record_list
-
-    data = json.dumps(request_body).encode('utf-8')
-
-    response = requests.post(url=url, headers=headers, data=data)
-
-    if response.status_code == 401:
-        token.generate()
-        return convert_lead(token, record_id, **kwargs)
-
-    else:
         content = json.loads(response.content.decode('utf-8'))
-        return token, content.get("data")
+        return token, response.status_code, content
+
+
+# def convert_lead(token, record_id, **kwargs):
+#     data_object = kwargs
+#     request_body = dict()
+#     record_list = list()
+
+#     record_list.append(data_object)
+#     request_body['data'] = record_list
+
+#     data = json.dumps(request_body).encode('utf-8')
+
+#     response = requests.post(url=url, headers=headers, data=data)
+
+#     if response.status_code == 401:
+#         token.generate()
+#         return convert_lead(token, record_id, **kwargs)
+
+#     else:
+#         content = json.loads(response.content.decode('utf-8'))
+#         return token, content.get("data")
+#v3 read
+
 
 def create_record(token, module, data_object):
-    url = f"https://www.zohoapis.com/crm/v2.1/{module}"
+    #url = f"https://www.zohoapis.com/crm/v2.1/{module}"
+    url = f'https://www.zohoapis.com/crm/v3/{module}'
     headers = make_header(token)
     
     request_body = {}
@@ -106,13 +115,27 @@ def get_records(token, module, **kwargs):
         return token, records
 
 
+def delete_records(token, module, record_id_list, **kwargs):
+    url = f'https://www.zohoapis.com/crm/v3/{module}?ids={",".join(record_id_list)}'
+    headers = make_header()
+    params = kwargs
+    response = requests.get(url=url, headers=headers, params=params)
+    if response.status_code >= 400 and response.status_code < 500:
+        print("Refreshing token")
+        token.generate()
+        return delete_records(token, module, record_id_list, **kwargs)
+
+
 def get_deleted_records(token, module, record_type, **kwargs):
-    url = f'https://www.zohoapis.com/crm/v2.1/{module}/deleted?type={record_type}'
+    #url = f'https://www.zohoapis.com/crm/v2.1/{module}/deleted?type={record_type}'
+    url = f'https://www.zohoapis.com/crm/v3/{module}/deleted?type={record_type}'
     headers = make_header(token)
 
     response = requests.get(url=url, headers=headers, params=kwargs)
 
-    if response.status_code == 401:
+    #if response.status_code == 401:
+    if response.status_code >= 400 and response.status_code < 500:
+        print("Refreshing token")
         token.generate()
         return get_deleted_records(token, module, record_type, **kwargs)
 
