@@ -162,11 +162,12 @@ def upload_csv(token, org_id, module, filename):
 	url = "https://content.zohoapis.com/crm/v3/upload"
 	headers = make_upload_header(token, org_id)
 	with open(filename, 'rb') as upload_file:
-		#files = {'file': upload_file}
-		files = ('file', upload_file)
-		request_body = [files]
-		
-		response = requests.post(url=url, headers=headers, data=request_body)
+		request_body = {'file': upload_file}
+		#files = ('file', upload_file)
+		#request_body = [files]
+		payload = {}
+
+		response = requests.post(url=url, headers=headers, data=payload,files=request_body)
 	#files = {"file": open(filename, 'rb')}
 
 	#response = requests.post(url=url, headers=headers, files=files)
