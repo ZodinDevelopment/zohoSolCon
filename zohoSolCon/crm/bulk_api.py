@@ -165,7 +165,7 @@ def upload_csv(token, org_id, module, filename):
 		#request_body = [files]
 		#payload = {}
 
-		response = requests.post(url=url, headers=headers, files=request_body)
+		response = requests.post(url=url, headers=headers, data=request_body)
 		print(response.headers)
 	#files = {"file": open(filename, 'rb')}
 
