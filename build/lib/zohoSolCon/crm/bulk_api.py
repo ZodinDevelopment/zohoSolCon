@@ -154,14 +154,19 @@ def make_upload_header(token, org_id):
 		'X-CRM-ORG': org_id,
 		'Content-Type': "multipart/form-data"
 	}
+		#'Content-Type': "multipart/form-data"
+	#}
 
 def upload_csv(token, org_id, module, filename):
 	url = "https://content.zohoapis.com/crm/v3/upload"
 	headers = make_upload_header(token, org_id)
+	with open(filename, 'rb') as upload_file:
+		request_body = {'file': upload_file}
 
-	files = {"file": open(filename, 'rb')}
+		response = requests.post(url=url, headers=headers, data=request_body)
+	#files = {"file": open(filename, 'rb')}
 
-	response = requests.post(url=url, headers=headers, files=files)
+	#response = requests.post(url=url, headers=headers, files=files)
 	print(response.status_code)
 	print(response.content)
 	input("....")
