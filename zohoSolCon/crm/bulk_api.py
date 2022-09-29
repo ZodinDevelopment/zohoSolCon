@@ -151,9 +151,7 @@ def make_upload_header(token, org_id):
 	return {
 		'Authorization': f'Zoho-oauthtoken {token.access}',
 		'feature': 'bulk-write',
-		'X-CRM-ORG': org_id,
-		'Content-Type': 'application/zip'
-
+		'X-CRM-ORG': org_id
 	}
 		#'Content-Type': "multipart/form-data"
 	#}
@@ -167,7 +165,7 @@ def upload_csv(token, org_id, module, filename):
 		#request_body = [files]
 		#payload = {}
 
-		response = requests.post(url=url, headers=headers, data=request_body)
+		response = requests.post(url=url, headers=headers, files=request_body)
 	#files = {"file": open(filename, 'rb')}
 
 	#response = requests.post(url=url, headers=headers, files=files)
@@ -183,6 +181,7 @@ def upload_csv(token, org_id, module, filename):
 		print(response.status_code)
 		print(response.reason)
 		print(response.text)
+		print(response.headers)
 		print("Refreshing token")
 		token.generate()
 		return upload_csv(token,org_id, module, filename)
