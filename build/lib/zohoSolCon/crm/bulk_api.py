@@ -154,9 +154,9 @@ def make_upload_header(token, org_id):
 		'X-CRM-ORG': org_id,
 	}
 
-def upload_csv(token, filename):
+def upload_csv(token, org_id, filename):
 	url = "https://content.zohoapis.com/crm/v3/upload"
-	headers = make_upload_header()
+	headers = make_upload_header(token, org_id)
 
 	form_data = {"file": open(filename, 'rb')}
 
