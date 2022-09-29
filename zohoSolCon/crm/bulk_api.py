@@ -131,16 +131,17 @@ def bulk_read_updates(token, job_details):
 	if "Y" in prompt:
 		os.system('clear')
 		print("Fetching your CSV Bulk Read job")
-		token, response = fetch_bulk_read(token, job_obj)
-		input("Enter to exit the script >>> ")
-
+		#token, response = fetch_bulk_read(token, job_obj)
+		#input("Enter to exit the script >>> ")
+		return fetch_bulk_read(token, job_obj)
 		
 
 	else:
 		os.system("clear")
 		print(f"Download URL >>>> {download_url}")
 		input("Enter to continue >>>> ")
-		raise SystemExit()
+		#raise SystemExit()
+		return token, job_obj
 
 	raise SystemExit()
 
@@ -300,15 +301,16 @@ def bulk_write_updates(token, job_details):
 		print("Fetching the result of the bulk write job as a CSV file.")
 		#token, response = fetch_bulk_write(token )
 		print("In dev")
-		raise SystemExit()
+		#raise SystemExit()
+		return token, file_stats
 
 	else:
 		os.system('clear')
 		print(f'Download URL >>> {download_url}')
 		input("Enter to exit this script >>> ")
-		raise SystemExit()
-
-	raise SystemExit()
+		#raise SystemExit()
+		return token, file_stats
+	#raise SystemExit()
 
 
 
