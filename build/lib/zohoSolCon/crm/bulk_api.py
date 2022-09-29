@@ -151,8 +151,8 @@ def make_upload_header(token, org_id):
 	return {
 		'Authorization': f'Zoho-oauthtoken {token.access}',
 		'feature': 'bulk-write',
-		'X-CRM-ORG': org_id,
-		#'Content-Type': "multipart/form"
+		'X-CRM-ORG': org_id
+		'Content-Type': "multipart/form-data"
 	}
 
 def upload_csv(token, org_id, module, filename):
