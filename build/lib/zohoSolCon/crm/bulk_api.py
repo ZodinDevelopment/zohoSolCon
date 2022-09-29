@@ -152,15 +152,16 @@ def make_upload_header(token, org_id):
 		'Authorization': f'Zoho-oauthtoken {token.access}',
 		'feature': 'bulk-write',
 		'X-CRM-ORG': org_id,
+		#'Content-Type': "multipart/form"
 	}
 
 def upload_csv(token, org_id, module, filename):
 	url = "https://content.zohoapis.com/crm/v3/upload"
 	headers = make_upload_header(token, org_id)
 
-	form_data = {"file": open(filename, 'rb')}
+	files = {"file": open(filename, 'rb')}
 
-	response = requests.post(url=url, headers=headers, data=form_data)
+	response = requests.post(url=url, headers=headers, files=files)
 	print(response.status_code)
 	print(response.content)
 	input("....")
