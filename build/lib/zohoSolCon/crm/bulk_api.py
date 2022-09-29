@@ -160,10 +160,10 @@ def upload_csv(token, org_id, module, filename):
 
 	form_data = {"file": open(filename, 'rb')}
 
-	response = requests.post(url=url, headers=headers, files=form_data)
+	response = requests.post(url=url, headers=headers, data=form_data)
 	print(response.status_code)
-	#print(response.content)
-	#input("....")
+	print(response.content)
+	input("....")
 	if response.status_code == 200:
 		print("There was an error with the file format or size")
 		input("continue >>> ")
