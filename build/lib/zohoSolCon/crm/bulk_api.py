@@ -151,8 +151,7 @@ def make_upload_header(token, org_id):
 	return {
 		'Authorization': f'Zoho-oauthtoken {token.access}',
 		'feature': 'bulk-write',
-		'X-CRM-ORG': org_id,
-		"Content-Type": "application/x-www-form-urlencoded"
+		'X-CRM-ORG': org_id
 	}
 		#'Content-Type': "multipart/form-data"
 	#}
@@ -178,6 +177,7 @@ def upload_csv(token, org_id, module, filename):
 	elif response.status_code >= 400 and response.status_code < 500:
 		print(response.status_code)
 		print(response.reason)
+		print(response.text)
 		print("Refreshing token")
 		token.generate()
 		return upload_csv(token,org_id, module, filename)
