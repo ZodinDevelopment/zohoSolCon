@@ -154,22 +154,25 @@ def make_upload_header(token, org_id):
 		'X-CRM-ORG': org_id,
 	}
 
-def upload_csv(token, org_id, filename):
+def upload_csv(token, org_id, module, filename):
 	url = "https://content.zohoapis.com/crm/v3/upload"
 	headers = make_upload_header(token, org_id)
 
 	form_data = {"file": open(filename, 'rb')}
 
 	response = requests.post(url=url, headers=headers, files=form_data)
+	print(response.status_code)
+	#print(response.content)
+	#input("....")
 	if response.status_code == 200:
 		print("There was an error with the file format or size")
 		input("continue >>> ")
-		return upload_csv(token, filename)
+		return upload_csv(token,org_id,module, filename)
 
 	elif response.status_code >= 400 and response.status_code < 500:
 		print("Refreshing token")
 		token.generate()
-		return upload_csv(token, filename)
+		return upload_csv(token,org_id, module, filename)
 
 	else:
 		content = json.loads(response.content.decode('utf-8'))
