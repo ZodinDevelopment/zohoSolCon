@@ -172,7 +172,7 @@ def upload_csv(token, org_id, module, filename):
 
 	elif response.status_code >= 400 and response.status_code < 500:
 		print(response.status_code)
-		print(response.content)
+		print(response.reason)
 		print("Refreshing token")
 		token.generate()
 		return upload_csv(token,org_id, module, filename)
