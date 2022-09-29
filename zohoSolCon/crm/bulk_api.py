@@ -152,7 +152,7 @@ def make_upload_header(token, org_id):
 		'Authorization': f'Zoho-oauthtoken {token.access}',
 		'feature': 'bulk-write',
 		'X-CRM-ORG': org_id,
-		'Content-Type': "multipart/form-data"
+		"Content-Type": "application/x-www-form-urlencoded"
 	}
 		#'Content-Type': "multipart/form-data"
 	#}
